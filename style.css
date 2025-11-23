@@ -336,7 +336,9 @@ body.dark .bracket-table tr:nth-child(odd) td {
 body.dark .note a {
   color: #93c5fd;
 }
-
+body.dark .toggle-label {
+  color: #e5e7eb; /* hoặc #f1f5f9 cho sáng hơn */
+}
 @media (max-width: 640px) {
   .app {
     padding: 16px 14px 22px;
