@@ -2,12 +2,20 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>Calculator Gross → Net (TNCN 2026)</title>
+    <meta name="description" content="Ứng dụng tính lương NET từ lương GROSS 2026 theo quy định mới: giảm trừ gia cảnh, thuế TNCN, BHXH, BHYT, BHTN, sàn và trần theo vùng. Hỗ trợ tính chi tiết từng bậc thuế, giao diện đẹp, có Dark Mode.">
+<title>Ứng dụng tính lương NET từ lương GROSS 2026</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="app">
-    <h1>Ứng dụng tính lương NET từ lương GROSS</h1>
+    <div class="app-header">
+      <h1>Ứng dụng tính lương NET từ lương GROSS</h1>
+      <label class="theme-toggle">
+        <input type="checkbox" id="darkModeToggle" />
+        <span>Dark mode</span>
+      </label>
+    </div>
+
     <div class="subtitle">
       Áp dụng <span class="tag">mức giảm trừ TNCN 2026</span> – bản thân 15,5 triệu, mỗi người phụ thuộc 6,2 triệu
     </div>
@@ -19,10 +27,24 @@
           <input type="number" id="gross" value="40000000" min="0" step="100000" />
           <div class="note" id="grossNote">Ví dụ: 40.000.000</div>
         </div>
+
         <div class="field">
           <label for="dependents">Số người phụ thuộc</label>
           <input type="number" id="dependents" value="1" min="0" step="1" />
           <div class="note">Nhập số nguyên: 0, 1, 2, 3…</div>
+        </div>
+
+        <div class="field">
+          <label for="region">Vùng lương tối thiểu (BHXH / BHYT / BHTN)</label>
+          <select id="region">
+            <option value="1">Vùng I</option>
+            <option value="2">Vùng II</option>
+            <option value="3">Vùng III</option>
+            <option value="4">Vùng IV</option>
+          </select>
+          <div class="note" id="regionNote">
+            Lương tối thiểu đóng BHXH/BHTN: 5.310.000 / tháng
+          </div>
         </div>
       </div>
 
@@ -33,13 +55,33 @@
 
       <div class="toggle-row">
         <label class="toggle-label">
-          <input type="checkbox" id="showBrackets" checked/>
+          <input type="checkbox" id="showBrackets" checked />
           Hiển thị chi tiết thuế theo từng bậc
         </label>
       </div>
     </div>
 
     <div class="result" id="result"></div>
+    <!-- Lưu ý & Giới hạn -->
+<div class="note" style="margin-top:30px; font-size:0.85rem; line-height:1.55;">
+  <h3 style="margin-bottom:8px;">Lưu ý & giới hạn</h3>
+  <ul style="padding-left:18px; margin-top:4px;">
+    <li>Công cụ mang tính <strong>tham khảo</strong>, không phải hệ thống tính lương chính thức.</li>
+    <li>Các mức giảm trừ, thuế suất, sàn/trần bảo hiểm có thể <strong>thay đổi theo luật hoặc nghị định mới</strong>.</li>
+    <li>Một số yếu tố thực tế chưa tính đến:
+      <ul style="padding-left:18px; margin-top:4px;">
+        <li>Phụ cấp được/không được tính vào lương đóng BHXH/BHYT/BHTN.</li>
+        <li>Các khoản miễn thuế TNCN đặc thù.</li>
+        <li>Trường hợp làm không đủ tháng, nghỉ không lương, tạm hoãn HĐLĐ.</li>
+      </ul>
+    </li>
+    <li>Nên đối chiếu với <strong>phòng nhân sự/kế toán</strong> để có số liệu chính xác.</li>
+  </ul>
+</div>
+
+    <div class="note">
+  	Xem thêm: <a href="info.html">Cơ sở tính toán &amp; giả định áp dụng</a>
+	</div>
   </div>
 
   <script src="app.js"></script>

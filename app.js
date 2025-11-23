@@ -5,6 +5,34 @@ const GT_PHU_THUOC = 6_200_000;
 // Trần lương đóng BHXH & BHYT (20 × lương cơ sở 2.340.000)
 const BHXH_BHYT_CAP = 46_800_000;
 
+// Lương tối thiểu vùng & trần BHTN (20 × lương tối thiểu vùng) từ 01/01/2026
+const REGION_DATA = {
+  "1": {
+    code: "I",
+    name: "Vùng I",
+    minWage: 5_310_000,
+    bhtnCap: 5_310_000 * 20,
+  },
+  "2": {
+    code: "II",
+    name: "Vùng II",
+    minWage: 4_730_000,
+    bhtnCap: 4_730_000 * 20,
+  },
+  "3": {
+    code: "III",
+    name: "Vùng III",
+    minWage: 4_140_000,
+    bhtnCap: 4_140_000 * 20,
+  },
+  "4": {
+    code: "IV",
+    name: "Vùng IV",
+    minWage: 3_700_000,
+    bhtnCap: 3_700_000 * 20,
+  },
+};
+
 function formatNumber(n) {
   return new Intl.NumberFormat("vi-VN").format(Math.round(n));
 }
@@ -43,7 +71,6 @@ function tinhThueTNCN(tntt) {
         index: b.index,
         start: b.start,
         limit: b.limit,
-        appliedTo: upper,
         income: incomeInBracket,
         rate: b.rate,
         tax: taxInBracket,
@@ -81,10 +108,57 @@ function updateGrossNote() {
   }
 }
 
+// Cập nhật note theo vùng
+function updateRegionNote() {
+  const regionSelect = document.getElementById("region");
+  const noteEl = document.getElementById("regionNote");
+  const regionKey = regionSelect.value || "1";
+  const region = REGION_DATA[regionKey] || REGION_DATA["1"];
+
+  const minWageText = formatNumber(region.minWage);
+  const bhtnCapText = formatNumber(region.bhtnCap);
+
+  noteEl.textContent =
+    `Lương tối thiểu đóng BHXH/BHTN (${region.name}): ` +
+    `${minWageText} / tháng; trần BHTN: ${bhtnCapText} / tháng.`;
+}
+
+// Áp dụng / lưu theme
+function applyTheme(theme) {
+  if (theme === "dark") {
+    document.body.classList.add("dark");
+  } else {
+    document.body.classList.remove("dark");
+  }
+}
+
+function initThemeToggle() {
+  const toggle = document.getElementById("darkModeToggle");
+  const stored = localStorage.getItem("tncn_theme");
+  let currentTheme = stored;
+
+  if (!currentTheme) {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    currentTheme = prefersDark ? "dark" : "light";
+  }
+
+  applyTheme(currentTheme);
+  toggle.checked = currentTheme === "dark";
+
+  toggle.addEventListener("change", () => {
+    const newTheme = toggle.checked ? "dark" : "light";
+    applyTheme(newTheme);
+    localStorage.setItem("tncn_theme", newTheme);
+  });
+}
+
 function calc() {
   const grossInput = document.getElementById("gross");
   const depInput = document.getElementById("dependents");
   const showBracketsInput = document.getElementById("showBrackets");
+  const regionSelect = document.getElementById("region");
   const resultDiv = document.getElementById("result");
 
   let gross = Number(grossInput.value || 0);
@@ -93,14 +167,23 @@ function calc() {
 
   const showBrackets = !!showBracketsInput.checked;
 
-  // Áp dụng trần cho BHXH & BHYT
-  const baseBH = Math.min(gross, BHXH_BHYT_CAP);
+  const regionKey = regionSelect.value || "1";
+  const region = REGION_DATA[regionKey] || REGION_DATA["1"];
+
+  const floor = region.minWage;
+  const bhtnCap = region.bhtnCap;
+
+  // Base BHXH/BHYT: clamp(GROSS, floor, BHXH_BHYT_CAP)
+  const baseBH_raw = gross;
+  const baseBH = Math.min(Math.max(baseBH_raw, floor), BHXH_BHYT_CAP);
 
   const bhxh = Math.round(baseBH * 0.08);
   const bhyt = Math.round(baseBH * 0.015);
 
-  // BHTN: tạm tính theo gross (chưa áp dụng trần vùng)
-  const bhtn = Math.round(gross * 0.01);
+  // Base BHTN: clamp(GROSS, floor, bhtnCap)
+  const baseBHTN_raw = gross;
+  const baseBHTN = Math.min(Math.max(baseBHTN_raw, floor), bhtnCap);
+  const bhtn = Math.round(baseBHTN * 0.01);
 
   const tongBH = bhxh + bhyt + bhtn;
 
@@ -126,13 +209,12 @@ function calc() {
   });
 
   rows.push({
-    label: `BHXH (8%) – tính trên min(GROSS, ${formatNumber(
-      BHXH_BHYT_CAP
-    )})`,
+    label: `BHXH (8%) – áp sàn & trần (BHXH/BHYT)`,
     formula:
-      `Base BHXH = min(${formatNumber(gross)}, ${formatNumber(
-        BHXH_BHYT_CAP
-      )}) = ${formatNumber(baseBH)}; ` +
+      `Base BHXH/BHYT = clamp(GROSS, sàn vùng, trần BHXH/BHYT) ` +
+      `= clamp(${formatNumber(baseBH_raw)}, ${formatNumber(
+        floor
+      )}, ${formatNumber(BHXH_BHYT_CAP)}) = ${formatNumber(baseBH)}; ` +
       `BHXH = ${formatNumber(baseBH)} × 0,08 = ${formatNumber(bhxh)}`,
     value: bhxh,
     note: "C2",
@@ -141,14 +223,11 @@ function calc() {
   });
 
   rows.push({
-    label: `BHYT (1,5%) – tính trên min(GROSS, ${formatNumber(
-      BHXH_BHYT_CAP
-    )})`,
+    label: `BHYT (1,5%) – cùng base với BHXH`,
     formula:
-      `Base BHYT = min(${formatNumber(gross)}, ${formatNumber(
-        BHXH_BHYT_CAP
-      )}) = ${formatNumber(baseBH)}; ` +
-      `BHYT = ${formatNumber(baseBH)} × 0,015 = ${formatNumber(bhyt)}`,
+      `Base BHYT = Base BHXH/BHYT = ${formatNumber(
+        baseBH
+      )}; BHYT = ${formatNumber(baseBH)} × 0,015 = ${formatNumber(bhyt)}`,
     value: bhyt,
     note: "C3",
     highlight: false,
@@ -156,8 +235,13 @@ function calc() {
   });
 
   rows.push({
-    label: "BHTN (1%) – tạm tính trên GROSS",
-    formula: `= ${formatNumber(gross)} × 0,01 = ${formatNumber(bhtn)}`,
+    label: `BHTN (1%) – áp sàn & trần theo vùng (${region.name})`,
+    formula:
+      `Base BHTN = clamp(GROSS, sàn vùng, trần BHTN vùng) ` +
+      `= clamp(${formatNumber(baseBHTN_raw)}, ${formatNumber(
+        floor
+      )}, ${formatNumber(bhtnCap)}) = ${formatNumber(baseBHTN)}; ` +
+      `BHTN = ${formatNumber(baseBHTN)} × 0,01 = ${formatNumber(bhtn)}`,
     value: bhtn,
     note: "C4",
     highlight: false,
@@ -271,6 +355,8 @@ function calc() {
   `;
 
   if (showBrackets && breakdown.length > 0) {
+    const totalBracketTax = breakdown.reduce((s, b) => s + b.tax, 0);
+
     html += `
       <div class="bracket-title">Chi tiết thuế theo từng bậc</div>
       <table class="bracket-table">
@@ -302,18 +388,12 @@ function calc() {
         </tr>
       `;
     });
-    // Thêm dòng tổng cộng
-	const totalBracketTax = breakdown.reduce((s, b) => s + b.tax, 0);
-
-	html += `
-	  <tr style="background:#eef6ff; font-weight:600;">
-	    <td colspan="4" style="text-align:right;">Tổng cộng</td>
-	    <td>${formatNumber(totalBracketTax)}</td>
-	  </tr>
-	`;
-
 
     html += `
+        <tr style="background:#eef6ff; font-weight:600;">
+          <td colspan="4" style="text-align:right;">Tổng cộng</td>
+          <td>${formatNumber(totalBracketTax)}</td>
+        </tr>
         </tbody>
       </table>
     `;
@@ -321,27 +401,41 @@ function calc() {
 
   html += `
     <div class="note">
-      * BHXH & BHYT áp dụng trần lương đóng ${formatNumber(
+      * BHXH & BHYT: base = clamp(GROSS, lương tối thiểu vùng, trần BHXH/BHYT = ${formatNumber(
         BHXH_BHYT_CAP
-      )} (20 × lương cơ sở 2.340.000). BHTN hiện đang tính trên lương GROSS, có thể bổ sung trần theo lương tối thiểu vùng nếu cần.
+      )}).<br/>
+      * BHTN: base = clamp(GROSS, lương tối thiểu vùng, trần BHTN vùng). Vùng hiện tại: ${
+        region.name
+      } (sàn = ${formatNumber(floor)}, trần BHTN = ${formatNumber(bhtnCap)}).
     </div>
   `;
 
   resultDiv.innerHTML = html;
+
+  return { rows, breakdown };
 }
 
+// Event listeners
 document.getElementById("calcBtn").addEventListener("click", calc);
 document.getElementById("exampleBtn").addEventListener("click", () => {
   document.getElementById("gross").value = 40_000_000;
   document.getElementById("dependents").value = 1;
+  document.getElementById("region").value = "1";
   updateGrossNote();
+  updateRegionNote();
   calc();
 });
 document.getElementById("gross").addEventListener("input", () => {
   updateGrossNote();
 });
+document.getElementById("region").addEventListener("change", () => {
+  updateRegionNote();
+  calc();
+});
 
-// Tự tính lần đầu với ví dụ mặc định
+// Khởi tạo theme + note + tính toán lần đầu
+initThemeToggle();
 updateGrossNote();
+updateRegionNote();
 calc();
 

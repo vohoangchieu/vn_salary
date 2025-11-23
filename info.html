@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cơ sở tính toán – Ứng dụng lương GROSS → NET 2026</title>
+  <meta name="description" content="Giải thích cơ sở tính toán cho ứng dụng lương NET từ lương GROSS 2026: giảm trừ gia cảnh, thuế TNCN, BHXH, BHYT, BHTN, lương cơ sở, lương tối thiểu vùng, sàn và trần bảo hiểm.">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <div class="app-header">
+      <h1>Cơ sở tính toán lương NET từ lương GROSS 2026</h1>
+      <a href="index.html" class="btn-primary" style="text-decoration:none; padding-inline:16px;">
+        ← Quay lại công cụ tính
+      </a>
+    </div>
+
+    <div class="subtitle">
+      Trang này mô tả các <strong>giả định, mức giảm trừ, thuế suất, sàn &amp; trần bảo hiểm</strong>
+      đang được sử dụng trong <em>“Ứng dụng tính lương NET từ lương GROSS 2026”</em>.
+    </div>
+
+    <!-- 1. Phạm vi & giả định -->
+    <section>
+      <h2>1. Phạm vi &amp; giả định</h2>
+      <ul>
+        <li>Áp dụng cho <strong>người lao động hưởng lương do doanh nghiệp quyết định</strong> (không phải lương theo bảng lương Nhà nước).</li>
+        <li>Các tham số được xây dựng theo <strong>bối cảnh năm 2026</strong>, dùng các mức bạn đã cung cấp:
+          <ul>
+            <li><strong>Lương cơ sở:</strong> 2.340.000 đồng/tháng (áp dụng 2025–2026).</li>
+            <li><strong>Lương tối thiểu vùng 2026:</strong> theo Nghị định 293/2025/NĐ-CP.</li>
+            <li><strong>Luật Việc làm 2025:</strong tiền lương đóng BHTN tối đa bằng 20 × lương tối thiểu vùng.</li>
+          </ul>
+        </li>
+        <li>Công cụ tập trung tính:
+          <ul>
+            <li><strong>Các khoản NLĐ phải đóng:</strong BHXH, BHYT, BHTN, thuế TNCN.</li>
+            <li><strong>Lương NET (thực nhận)</strong> = GROSS – bảo hiểm NLĐ – thuế TNCN.</li>
+          </ul>
+        </li>
+        <li><strong>Chỉ là công cụ tham khảo</strong> – không thay thế tư vấn pháp lý/thuế chính thức.</li>
+      </ul>
+    </section>
+
+    <!-- 2. Giảm trừ gia cảnh -->
+    <section>
+      <h2>2. Giảm trừ gia cảnh dùng trong công cụ</h2>
+      <p>Công cụ đang dùng mức <strong>giảm trừ gia cảnh dự kiến từ kỳ tính thuế năm 2026</strong>:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Đối tượng</th>
+            <th>Mức giảm trừ (VND/tháng)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Bản thân người nộp thuế</td>
+            <td style="text-align:right;">15.500.000</td>
+          </tr>
+          <tr>
+            <td>Mỗi người phụ thuộc</td>
+            <td style="text-align:right;">6.200.000</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Thu nhập tính thuế (C8) được tính theo công thức:</p>
+      <pre style="font-size:0.85rem; white-space:pre-wrap;">
+C8 = C1 - C5 - C6 - C7
+  = Lương GROSS
+    - Tổng BH NLĐ đóng
+    - Giảm trừ bản thân
+    - Giảm trừ người phụ thuộc
+      </pre>
+    </section>
+
+    <!-- 3. Biểu thuế TNCN -->
+    <section>
+      <h2>3. Biểu thuế TNCN lũy tiến từng phần (dự kiến 2026)</h2>
+      <p>Công cụ sử dụng <strong>biểu thuế 5 bậc</strong>, tính theo <strong>thu nhập tính thuế/tháng</strong> (C8):</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Bậc</th>
+            <th>Khoảng thu nhập tính thuế/tháng</th>
+            <th>Thuế suất</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Bậc 1</td>
+            <td>Đến 10.000.000</td>
+            <td>5%</td>
+          </tr>
+          <tr>
+            <td>Bậc 2</td>
+            <td>Trên 10.000.000 đến 30.000.000</td>
+            <td>15%</td>
+          </tr>
+          <tr>
+            <td>Bậc 3</td>
+            <td>Trên 30.000.000 đến 60.000.000</td>
+            <td>25%</td>
+          </tr>
+          <tr>
+            <td>Bậc 4</td>
+            <td>Trên 60.000.000 đến 100.000.000</td>
+            <td>30%</td>
+          </tr>
+          <tr>
+            <td>Bậc 5</td>
+            <td>Trên 100.000.000</td>
+            <td>35%</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Cách tính trong app:</p>
+      <ul>
+        <li>Cắt thu nhập tính thuế vào từng bậc, tính thuế cho mỗi bậc, sau đó <strong>cộng lại</strong>.</li>
+        <li>Bảng “Chi tiết thuế theo từng bậc” trong ứng dụng hiển thị:
+          <ul>
+            <li>Thu nhập tính thuế nằm trong từng bậc.</li>
+            <li>Thuế suất bậc đó.</li>
+            <li>Tiền thuế phải nộp ở từng bậc.</li>
+            <li>Dòng cuối là <strong>Tổng cộng</strong>.</li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 4. Lương cơ sở & trần BHXH/BHYT -->
+    <section>
+      <h2>4. Lương cơ sở &amp; trần BHXH/BHYT</h2>
+      <p>Từ năm 2025 và tiếp tục dùng cho 2026, công cụ giả định:</p>
+      <ul>
+        <li><strong>Lương cơ sở:</strong> 2.340.000 đồng/tháng.</li>
+        <li><strong>Trần lương làm căn cứ đóng BHXH/BHYT:</strong></li>
+      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th>Khoản</th>
+            <th>Công thức</th>
+            <th>Giá trị (VND/tháng)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Trần BHXH/BHYT</td>
+            <td>20 × lương cơ sở</td>
+            <td style="text-align:right;">46.800.000</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Trong app, tiền lương làm căn cứ đóng BHXH/BHYT được tính như sau:</p>
+      <pre style="font-size:0.85rem; white-space:pre-wrap;">
+Base BHXH/BHYT = clamp(GROSS, sàn vùng, trần BHXH/BHYT)
+  = min( max(GROSS, lương tối thiểu vùng), 46.800.000 )
+      </pre>
+      <p>Trong đó:</p>
+      <ul>
+        <li><strong>“sàn vùng”</strong> = lương tối thiểu tháng theo vùng (Vùng I–IV).</li>
+        <li><strong>“trần BHXH/BHYT”</strong> = 46.800.000.</li>
+      </ul>
+    </section>
+
+    <!-- 5. Lương tối thiểu vùng 2026 -->
+    <section>
+      <h2>5. Lương tối thiểu vùng 2026 (làm sàn BHXH/BHYT/BHTN)</h2>
+      <p>Theo Điều 3 Nghị định 293/2025/NĐ-CP, mức lương tối thiểu vùng từ 01/01/2026:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Vùng</th>
+            <th>Lương tối thiểu tháng (VND)</th>
+            <th>Lương tối thiểu giờ (VND)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Vùng I</td>
+            <td style="text-align:right;">5.310.000</td>
+            <td style="text-align:right;">25.500</td>
+          </tr>
+          <tr>
+            <td>Vùng II</td>
+            <td style="text-align:right;">4.730.000</td>
+            <td style="text-align:right;">22.700</td>
+          </tr>
+          <tr>
+            <td>Vùng III</td>
+            <td style="text-align:right;">4.140.000</td>
+            <td style="text-align:right;">20.000</td>
+          </tr>
+          <tr>
+            <td>Vùng IV</td>
+            <td style="text-align:right;">3.700.000</td>
+            <td style="text-align:right;">17.800</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Trong app:</p>
+      <ul>
+        <li>Đây là <strong>sàn</strong> để tính:
+          <ul>
+            <li>Base BHXH/BHYT.</li>
+            <li>Base BHTN.</li>
+          </ul>
+        </li>
+        <li>Bạn chọn vùng (I, II, III, IV) trong dropdown để công cụ áp đúng sàn &amp; trần.</li>
+      </ul>
+    </section>
+
+    <!-- 6. Trần BHTN theo vùng -->
+    <section>
+      <h2>6. Trần BHTN theo vùng từ 2026</h2>
+      <p>Theo Luật Việc làm 2025 (hiệu lực 01/01/2026):</p>
+      <blockquote style="font-size:0.85rem;">
+        Tiền lương làm căn cứ đóng bảo hiểm thất nghiệp cao nhất bằng
+        <strong>20 lần mức lương tối thiểu tháng theo vùng</strong>
+        do Chính phủ công bố tại thời điểm đóng bảo hiểm thất nghiệp.
+      </blockquote>
+      <table>
+        <thead>
+          <tr>
+            <th>Vùng</th>
+            <th>Lương tối thiểu tháng (VND)</th>
+            <th>Trần lương đóng BHTN (20 × lương tối thiểu vùng)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Vùng I</td>
+            <td style="text-align:right;">5.310.000</td>
+            <td style="text-align:right;">106.200.000</td>
+          </tr>
+          <tr>
+            <td>Vùng II</td>
+            <td style="text-align:right;">4.730.000</td>
+            <td style="text-align:right;">94.600.000</td>
+          </tr>
+          <tr>
+            <td>Vùng III</td>
+            <td style="text-align:right;">4.140.000</td>
+            <td style="text-align:right;">82.800.000</td>
+          </tr>
+          <tr>
+            <td>Vùng IV</td>
+            <td style="text-align:right;">3.700.000</td>
+            <td style="text-align:right;">74.000.000</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Trong app, tiền lương làm căn cứ đóng BHTN được tính như sau:</p>
+      <pre style="font-size:0.85rem; white-space:pre-wrap;">
+Base BHTN = clamp(GROSS, lương tối thiểu vùng, trần BHTN vùng)
+  = min( max(GROSS, lương tối thiểu vùng), 20 × lương tối thiểu vùng )
+      </pre>
+    </section>
+
+    <!-- 7. Tỷ lệ NLĐ đóng BHXH/BHYT/BHTN -->
+    <section>
+      <h2>7. Tỷ lệ NLĐ đóng BHXH/BHYT/BHTN trong app</h2>
+      <p>Công cụ đang dùng các tỷ lệ <strong>phần NLĐ phải đóng</strong> như sau:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Loại bảo hiểm</th>
+            <th>Tỷ lệ NLĐ đóng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>BHXH</td>
+            <td>8%</td>
+          </tr>
+          <tr>
+            <td>BHYT</td>
+            <td>1,5%</td>
+          </tr>
+          <tr>
+            <td>BHTN</td>
+            <td>1%</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Trong bảng kết quả:</p>
+      <ul>
+        <li><strong>C2:</strong> BHXH (8%) – áp sàn &amp; trần.</li>
+        <li><strong>C3:</strong> BHYT (1,5%) – cùng base với BHXH.</li>
+        <li><strong>C4:</strong> BHTN (1%) – áp sàn &amp; trần theo vùng.</li>
+        <li><strong>C5:</strong> Tổng BH NLĐ đóng = C2 + C3 + C4.</li>
+      </ul>
+    </section>
+
+  </div>
+</body>
+</html>
+
