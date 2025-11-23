@@ -439,3 +439,10 @@ updateGrossNote();
 updateRegionNote();
 calc();
 
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const grossInput = document.getElementById("gross");
+  if (grossInput) grossInput.focus();
+});
+

@@ -233,6 +233,12 @@ tr:nth-child(even) td {
 .bracket-table td:nth-child(5) {
   text-align: right;
 }
+#gross:focus {
+  outline: none;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.3);
+  background-color: #f0f7ff;
+}
 
 /* ==== DARK MODE ==== */
 
@@ -339,6 +345,12 @@ body.dark .note a {
 body.dark .toggle-label {
   color: #e5e7eb; /* hoặc #f1f5f9 cho sáng hơn */
 }
+body.dark #gross:focus {
+  border-color: #60a5fa !important;
+  box-shadow: 0 0 0 2px rgba(96,165,250,0.4);
+  background-color: #1e293b;
+}
+
 @media (max-width: 640px) {
   .app {
     padding: 16px 14px 22px;
