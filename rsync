@@ -1,0 +1,1 @@
+rsync -avz  --exclude=".git" -e "ssh -p 1105"  ../vn_salary/ root@vps:/var/www/app/vn_salary/
