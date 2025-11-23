@@ -1,0 +1,222 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f4f6fb;
+  margin: 0;
+  padding: 20px;
+  color: #222;
+}
+
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px 24px 32px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 1.6rem;
+  text-align: center;
+}
+
+.subtitle {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.field {
+  flex: 1 1 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+input[type="number"] {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.95rem;
+}
+
+input[type="number"]:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px #2563eb33;
+}
+
+.btn-row {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+button {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #2563eb;
+}
+
+.btn-ghost:hover {
+  background: #e5edff;
+}
+
+.toggle-row {
+  margin-top: 10px;
+}
+
+.toggle-label {
+  font-size: 0.9rem;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.note {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.result {
+  margin-top: 24px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 0.9rem;
+}
+
+th,
+td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 8px;
+  vertical-align: top;
+}
+
+/* Căn trái cho cột 1, 2, 4 */
+th:nth-child(1),
+th:nth-child(2),
+th:nth-child(4),
+td:nth-child(1),
+td:nth-child(2),
+td:nth-child(4) {
+  text-align: left;
+}
+
+/* Căn phải cho cột Số tiền (VND) */
+th:nth-child(3),
+td:nth-child(3) {
+  text-align: right;
+}
+
+th {
+  background: #f8fafc;
+  font-weight: 600;
+}
+
+tr:nth-child(even) td {
+  background: #f9fbff;
+}
+
+.highlight {
+  background: #e0f2fe !important;
+  font-weight: 600;
+}
+
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.net-summary {
+  margin-top: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Số tiền VND ở dòng Lương Net in đậm */
+.net-row td:nth-child(3) {
+  font-weight: 700;
+}
+
+.bracket-title {
+  margin-top: 18px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.bracket-table th:nth-child(1),
+.bracket-table td:nth-child(1),
+.bracket-table th:nth-child(2),
+.bracket-table td:nth-child(2) {
+  text-align: left;
+}
+
+.bracket-table th:nth-child(3),
+.bracket-table td:nth-child(3),
+.bracket-table th:nth-child(4),
+.bracket-table td:nth-child(4),
+.bracket-table th:nth-child(5),
+.bracket-table td:nth-child(5) {
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .app {
+    padding: 16px 14px 22px;
+  }
+  h1 {
+    font-size: 1.3rem;
+  }
+}
+

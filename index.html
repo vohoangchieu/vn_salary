@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calculator Gross → Net (TNCN 2026)</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <h1>Ứng dụng tính lương NET từ lương GROSS</h1>
+    <div class="subtitle">
+      Áp dụng <span class="tag">mức giảm trừ TNCN 2026</span> – bản thân 15,5 triệu, mỗi người phụ thuộc 6,2 triệu
+    </div>
+
+    <div class="form">
+      <div class="form-row">
+        <div class="field">
+          <label for="gross">Lương GROSS / tháng (VND)</label>
+          <input type="number" id="gross" value="40000000" min="0" step="100000" />
+          <div class="note" id="grossNote">Ví dụ: 40.000.000</div>
+        </div>
+        <div class="field">
+          <label for="dependents">Số người phụ thuộc</label>
+          <input type="number" id="dependents" value="1" min="0" step="1" />
+          <div class="note">Nhập số nguyên: 0, 1, 2, 3…</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="calcBtn">Tính toán</button>
+        <button class="btn-ghost" id="exampleBtn">Dùng ví dụ 40 triệu + 1 phụ thuộc</button>
+      </div>
+
+      <div class="toggle-row">
+        <label class="toggle-label">
+          <input type="checkbox" id="showBrackets" checked/>
+          Hiển thị chi tiết thuế theo từng bậc
+        </label>
+      </div>
+    </div>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
